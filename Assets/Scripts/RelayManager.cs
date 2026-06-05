@@ -21,8 +21,11 @@ public class RelayManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);  
+    }
 
+    private void Start()
+    {
         transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
     }
 
