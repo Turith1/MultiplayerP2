@@ -453,15 +453,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 759704551}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd971f1fe95c3ab48ac87d24c49364cc, type: 3}
+  m_Script: {fileID: 11500000, guid: 44792bf31c686e54aaca02428ce66551, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LobbyManager
   IsHost: 0
   code: 
+  spawnPoints: []
   maxPlayers: 4
   jotunCharacterPrefab: {fileID: 0}
   priestCharacterPrefab: {fileID: 0}
   wisper: {fileID: 0}
+  car: {fileID: 7130683551886319331, guid: df33a1a1177ebb445be9387d04694612, type: 3}
+  raceStarted:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+  countdown:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 
 --- !u!4 &759704553
 Transform:
   m_ObjectHideFlags: 0
@@ -694,7 +706,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1743302219}
-    PlayerPrefab: {fileID: 7130683551886319331, guid: df33a1a1177ebb445be9387d04694612, type: 3}
+    PlayerPrefab: {fileID: 0}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: a56f6da28d53c5443aa2c9490fdc28e2, type: 2}

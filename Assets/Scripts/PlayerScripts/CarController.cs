@@ -14,15 +14,20 @@ public class CarController : NetworkBehaviour
     private float currentSpeed;
     private float throttleInput;
     private float steeringInput;
+    private LobbyManager lobbyManager;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        lobbyManager = FindAnyObjectByType<LobbyManager>();
     }
 
     private void FixedUpdate()
     {
         if (!IsServer)
+            return;
+
+        if (!lobbyManager.raceStarted)
             return;
 
         SimulateVehicle();

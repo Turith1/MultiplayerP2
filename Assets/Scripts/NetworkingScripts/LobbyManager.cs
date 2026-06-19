@@ -8,6 +8,7 @@ using Unity.Netcode;
 using System.Linq;
 using Unity.Services.Authentication;
 using System;
+using System.Collections;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -17,11 +18,17 @@ public class LobbyManager : MonoBehaviour
 
     public bool IsHost;
     public string code;
+    public Transform[] spawnPoints;
+    public RaceController raceController;
+    public bool raceStarted = false;
+
+
     private bool heartbeatRunning;
     private bool _isLeavingLobby;
     private bool isJoiningLobby = false;
     private bool isCreatingLobby = false;
     private bool isGameStarting = false;
+    private int nextSpawnPoint = 0;
 
     [SerializeField]
     private int maxPlayers = 4;
@@ -31,6 +38,8 @@ public class LobbyManager : MonoBehaviour
     private GameObject priestCharacterPrefab;
     [SerializeField]
     private GameObject wisper;
+    [SerializeField]
+    private GameObject car;
 
 
     private void Awake()
@@ -51,7 +60,23 @@ public class LobbyManager : MonoBehaviour
     {
         if (NetworkManager.Singleton != null)
         {
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+        }
+    }
+
+    private void OnClientConnected(ulong clientId)
+    {
+        if (!NetworkManager.Singleton.IsServer)
+            return;
+
+        // Only spawn if GameScene is already active and spawn points are ready
+        if (spawnPoints != null && spawnPoints.Length > 0)
+        {
+            if (NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject != null)
+                return;
+
+            SpawnPlayer(clientId);
         }
     }
 
@@ -99,6 +124,8 @@ public class LobbyManager : MonoBehaviour
             // 3. Load lobby scene (NGO already running)
             //SceneManager.LoadScene("LobbyScene");
             NetworkManager.Singleton.SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
+
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
 
             IsHost = true;
         }
@@ -307,6 +334,47 @@ public class LobbyManager : MonoBehaviour
         HideCursorClientRpc();
     }
 
+    private void OnSceneLoaded(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+    {
+        if (sceneName != "GameScene")
+            return;
+
+        foreach (ulong clientId in clientsCompleted)
+        {
+            if (NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject != null)
+                continue;
+
+            SpawnPlayer(clientId);
+        }
+    }
+
+    private void SpawnPlayer(ulong ID)
+    {
+        Transform spawnPoint = spawnPoints[nextSpawnPoint % spawnPoints.Length];
+        nextSpawnPoint++;
+
+        GameObject carPrefab = Instantiate(car, spawnPoint.position, spawnPoint.rotation);
+
+        carPrefab.GetComponent<NetworkObject>()
+           .SpawnAsPlayerObject(ID, true);
+
+        CanStartRace();
+    }
+
+    private void CanStartRace()
+    {
+        if (!NetworkManager.Singleton.IsServer)
+            return;
+
+        int playerCount =
+            NetworkManager.Singleton.ConnectedClientsList.Count;
+
+        if (playerCount >= 3)
+        {
+            raceController.StartCountdownClientRpc();
+        }
+    }
+
     [ClientRpc]
     private void HideCursorClientRpc()
     {
@@ -322,6 +390,7 @@ public class LobbyManager : MonoBehaviour
             NetworkManager.Singleton.Shutdown();
         }
     }
+
 
     private async void OnClientDisconnected(ulong clientId)
     {
