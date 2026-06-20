@@ -1597,7 +1597,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: -304, y: 0}
-  m_SizeDelta: {x: 600, y: 300}
+  m_SizeDelta: {x: 600, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1520893375
 MonoBehaviour:
@@ -1619,12 +1619,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Gabriel Pitzer - 2414070004
-
-    Narendra Faria Costa -2414070019
-
-    Christian
-    Madsen Kronemberger - 2224070019'
+  m_text: "Gabriel Pitzer - 2414070004\nNarendra Faria Costa -2414070019\nChristian
+    Madsen Kronemberger - 2224070019\nJo\xE3o Victor Faim Arruda -\n2324070001"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
